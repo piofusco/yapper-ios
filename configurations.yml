@@ -1,0 +1,96 @@
+configs:
+  debug: debug
+  release: release
+settingGroups:
+  preset_generic:
+    GENERATE_INFOPLIST_FILE: YES
+  dev_compiler_flags:
+    OTHER_SWIFT_FLAGS:
+      - -D DEBUG
+  release_compiler_flags:
+    OTHER_SWIFT_FLAGS:
+      - -D RELEASE
+  dev_app_target_settings:
+    APP_DISPLAY_NAME: Yapper Dev
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon_dev
+    DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+    DEVELOPMENT_TEAM: A6K9P929M9
+    DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
+    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Yapper.debug
+    SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
+  release_app_target_settings:
+    APP_DISPLAY_NAME: Yapper
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon_release
+    CODE_SIGN_IDENTITY: "iPhone Distribution"
+    DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
+    DEVELOPMENT_TEAM: A6K9P929M9
+    DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
+    ONLY_ACTIVE_ARCH: false
+    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Yapper
+    SWIFT_ACTIVE_COMPILATION_CONDITIONS: RELEASE
+
+  # The preset_generic settings group is applied to all targets, and provides compiler flags
+  # to be used within the codebase.
+  preset_all:
+    groups:
+      - preset_generic
+    configs:
+      debug:
+        groups:
+          - dev_compiler_flags
+      release:
+        groups:
+          - release_compiler_flags
+
+  # The preset_app_targets settings group is applied only to the app target. These settings
+  # drive config based settings for the app.
+  preset_app_targets:
+    configs:
+      debug:
+        groups:
+          - dev_app_target_settings
+      release:
+        groups:
+          - release_app_target_settings
+  present_analytics_target:
+    configs:
+      debug:
+        groups:
+          - dev_analytics_target_settings
+      release:
+        groups:
+          - release_analytics_target_settings
+schemes:
+  Yapper_dev:
+    orderHint: 0
+    build:
+      config: debug
+      targets:
+        Yapper: all
+    run:
+      config: debug
+    archive:
+      config: debug
+  Yapper_release:
+    build:
+      config: release
+      targets:
+        Yapper: all
+      overrideArchitectures: universal
+    run:
+      config: release
+    archive:
+      config: release
+  YapperTests:
+    build:
+      targets:
+        YapperTests:
+        - test
+        - run
+    test:
+      targets:
+        - name: YapperTests
+          parallelizable: true
+          randomExecutionOrder: true
+          skippedTests: []
+

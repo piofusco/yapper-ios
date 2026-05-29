@@ -1,0 +1,83 @@
+---
+name: Yapper
+include:
+- configurations.yml
+options:
+  bundleIdPrefix: com.piofusco
+attributes:
+  BuildIndependentTargetsInParallel: true
+settings:
+  base:
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: false
+    STRING_CATALOG_GENERATE_SYMBOLS: true
+targets:
+  Yapper:
+    type: application
+    platform: iOS
+    deploymentTarget: 18.0
+    info:
+      path: Yapper/Info.generated.plist
+      properties:
+        ALWAYS_SEARCH_USER_PATHS: false
+        CFBundleVersion: '1'
+        CFBundleDisplayName: "${APP_DISPLAY_NAME}"
+        ENABLE_BITCODE: false
+        ITSAppUsesNonExemptEncryption: false
+        SUPPORTED_PLATFORMS: iphoneos iphonesimulator
+        SUPPORTS_MACCATALYST: false
+        UILaunchScreen:
+          UIColorName: accentYellow
+        UIBackgroundModes:
+        - audio
+        UISupportedInterfaceOrientations:
+        - UIInterfaceOrientationPortrait
+        - UIInterfaceOrientationPortraitUpsideDown
+        - UIInterfaceOrientationLandscapeLeft
+        - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+        - UIInterfaceOrientationPortrait
+        - UIInterfaceOrientationPortraitUpsideDown
+        - UIInterfaceOrientationLandscapeLeft
+        - UIInterfaceOrientationLandscapeRight
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UIStatusBarHidden: true
+        UIViewControllerBasedStatusBarAppearance: true
+        VERSIONING_SYSTEM: custom
+    sources:
+    - Yapper/
+    settings:
+      groups:
+      - preset_all
+      - preset_app_targets
+      base:
+        DEVELOPMENT_LANGUAGE: en
+        SWIFT_EMIT_LOC_STRINGS: true
+        ENABLE_USER_SCRIPT_SANDBOXING: true
+        ENABLE_CLANG_MODULE_VERIFIER: true
+        PRODUCT_NAME: Yapper
+        CURRENT_PROJECT_VERSION: '1'
+        MARKETING_VERSION: 1.0.0
+        CODE_SIGN_IDENTITY: "Apple Development"
+        CODE_SIGN_STYLE: Automatic
+        SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD: true
+        SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD: false
+        ENABLE_VISIONOS_SUPPORT: false
+        TARGETED_DEVICE_FAMILY: '1,2'
+        SWIFT_VERSION: '6.0'
+    attributes:
+      BuildIndependentTargetsInParallel: true
+  YapperTests:
+    dependencies:
+    - target: Yapper
+    deploymentTarget: 18.0
+    info:
+      path: YapperTests/Info.generated.plist
+    platform: iOS
+    sources:
+    - YapperTests/
+    type: bundle.unit-test
+fileGroups:
+  - configurations.yml
+  - project.yml
+  - ci_scripts/
+  - README.md
