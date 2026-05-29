@@ -1,0 +1,95 @@
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# Xcode
+# =========================
+# User-specific settings
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# Derived data
+DerivedData/
+build/
+
+# Xcode
+*.xcodeproj/
+*.xcworkspace/
+timeline.xctimeline
+playground.xcworkspace
+
+# =========================
+# Swift Package Manager
+# =========================
+.build/
+Packages/
+Package.resolved
+
+# Keep Package.resolved for apps, ignore for libraries
+# (Uncomment next line if this is a library)
+# !Package.resolved
+
+# =========================
+# CocoaPods
+# =========================
+Pods/
+Podfile.lock
+
+# =========================
+# Carthage
+# =========================
+Carthage/Build/
+
+# =========================
+# Fastlane
+# =========================
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output/
+
+# =========================
+# Code coverage
+# =========================
+*.profdata
+*.gcno
+*.gcda
+
+# =========================
+# SwiftLint / SwiftFormat
+# =========================
+.swiftlint.yml
+.swiftlint.cache
+.swiftformat
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# Environment / Secrets
+# =========================
+.env
+.env.*
+*.p12
+*.cer
+*.mobileprovision
+
+# =========================
+# CI artifacts
+# =========================
+*.junit
+*.xcresult
+
+# =========================
+# Temporary / Backup
+# =========================
+*~
+*.swp
