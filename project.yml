@@ -3,7 +3,7 @@ name: Yapper
 include:
 - configurations.yml
 options:
-  bundleIdPrefix: com.piofusco
+  bundleIdPrefix: com.americo
 attributes:
   BuildIndependentTargetsInParallel: true
 settings:

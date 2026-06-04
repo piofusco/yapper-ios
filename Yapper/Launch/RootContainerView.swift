@@ -17,7 +17,58 @@ struct RootContainerView: View {
         TabView(selection: $router.selectedTab) {
             Tab(value: TabDestination.example) {
                 NavigationContainer(parentRouter: router, tab: .example) {
-                    EmptyView()
+                    ConversationPreviewsListView(
+                        conversationPreviews: [
+                            ConversationPreview(
+                                id: "1",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "2",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "3",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "4",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "5",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "6",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "7",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            ),
+                            ConversationPreview(
+                                id: "3",
+                                author: "Bob Wills",
+                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
+                                timestamp: .zero
+                            )
+                        ]
+                    )
                 }
             } label: {
                 Label {
