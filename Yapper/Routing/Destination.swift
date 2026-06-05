@@ -45,11 +45,11 @@ enum FullScreenDestination: Hashable, CustomStringConvertible, Identifiable {
 }
 
 enum PushDestination: CustomStringConvertible, Hashable {
-    case example
+    case conversation(id: String)
 
     public var description: String {
         switch self {
-            case .example: "example"
+            case .conversation(let id): "conversation(\(id))"
         }
     }
 }

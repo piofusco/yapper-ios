@@ -42,7 +42,7 @@ struct GrowingTextInput: View {
                 TextField("whatever", text: $text, axis: .vertical)
                     .font(.body)
                     .scrollContentBackground(.hidden)
-                    .padding(15)
+                    .padding(12)
                     .lineLimit(nil)
                     .frame(minHeight: 36)
             }

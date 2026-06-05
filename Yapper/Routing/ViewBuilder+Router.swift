@@ -14,7 +14,7 @@ func view(
     for destination: PushDestination,
 ) -> some View {
     switch destination {
-        case .example: EmptyView()
+        case .conversation(let id): ConversationView(id: id)
     }
 }
 
