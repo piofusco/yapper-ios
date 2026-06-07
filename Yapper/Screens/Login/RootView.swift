@@ -1,5 +1,5 @@
 //
-//  LoginView.swift
+//  HomeView.swift
 //  Yapper
 //
 //  Created by Michael Pace on 6/6/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct LoginView: View {
+struct RootView: View {
     @Environment(Router.self) private var router
 
     var body: some View {
@@ -58,7 +58,7 @@ struct LoginView: View {
 
 #Preview {
     NavigationStack {
-        LoginView()
+        RootView()
     }
     .environment(Router(level: 0, identifierTab: nil))
 }
