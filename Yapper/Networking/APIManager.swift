@@ -18,11 +18,14 @@ protocol APIManager: Sendable {
 
 final class DefaultAPIManager: APIManager, @unchecked Sendable {
     private let httpClient: any HTTPClient
+    private let encoder: any ScaffoldJSONEncoder
 
     init(
-        httpClient: any HTTPClient = DefaultHTTPClient()
+        httpClient: any HTTPClient = DefaultHTTPClient(),
+        encoder: any ScaffoldJSONEncoder = JSONEncoder()
     ) {
         self.httpClient = httpClient
+        self.encoder = encoder
     }
 
     func login(
@@ -52,7 +55,7 @@ final class DefaultAPIManager: APIManager, @unchecked Sendable {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(body)
+        request.httpBody = try encoder.encode(body)
         return request
     }
 }
