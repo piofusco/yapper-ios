@@ -55,14 +55,16 @@ final class DefaultChatService: ChatService {
     func connect(
         token: String
     ) async throws {
-        let url = YapperEndpoint.webSocket.url
-        logger.debug("→ WS connect \(url.absoluteString)")
-        try await webSocketClient.connect(to: url)
+        logger.debug("→ WS connect \(YapperEndpoint.webSocket.url.absoluteString)")
+        try await webSocketClient.connect(to: YapperEndpoint.webSocket.url)
+
         logger.debug("← WS connected")
         startListening()
         let auth = OutgoingAuth(token: token)
         let json = try encoder.encode(auth)
+
         guard let jsonString = String(data: json, encoding: .utf8) else { return }
+        
         logger.debug("→ WS send: \(jsonString)")
         try await webSocketClient.send(.text(jsonString))
         startPinging()
@@ -86,6 +88,7 @@ final class DefaultChatService: ChatService {
         )
         let json = try encoder.encode(dm)
         guard let jsonString = String(data: json, encoding: .utf8) else { return }
+
         logger.debug("→ WS send: \(jsonString)")
         try await webSocketClient.send(.text(jsonString))
     }
@@ -96,6 +99,9 @@ final class DefaultChatService: ChatService {
         pingTask?.cancel()
         pingTask = nil
         await webSocketClient.disconnect()
+        messages = []
+        friends = []
+        currentUser = nil
     }
 
     private func startListening() {
@@ -115,44 +121,45 @@ final class DefaultChatService: ChatService {
         guard case .text(let json) = message,
               let data = json.data(using: .utf8),
               let envelope = try? decoder.decode(IncomingEnvelope.self, from: data) else { return }
+
         logger.debug("← WS recv [\(envelope.type)]: \(json)")
+
         switch envelope.type {
-        case "dm":
-            guard let dm = try? decoder.decode(IncomingDM.self, from: data) else {
-                logger.error("← WS failed to decode dm")
-                return
-            }
-            messages.append(ChatMessage(
-                text: dm.text,
-                partner: dm.from,
-                isSent: false,
-                timestamp: Date(timeIntervalSince1970: TimeInterval(dm.ts) / 1000)
-            ))
-        case "auth_ok":
-            guard let msg = try? decoder.decode(IncomingAuthOK.self, from: data) else {
-                logger.error("← WS failed to decode auth_ok")
-                return
-            }
-            currentUser = msg.user
-            logger.debug("← WS auth_ok — \(msg.friends.count) friends")
-            friends = msg.friends
-                .filter { $0.username != msg.user }
-                .map { Friend(username: $0.username, online: $0.online) }
-        case "friends":
-            guard let msg = try? decoder.decode(IncomingFriendsMessage.self, from: data) else {
-                logger.error("← WS failed to decode friends")
-                return
-            }
-            friends = msg.friends
-                .filter { $0.username != currentUser }
-                .map { Friend(username: $0.username, online: $0.online) }
-        case "dm_sent":
-            break
-        case "pong":
-            logger.debug("← WS pong [\(Date())]")
-        default:
-            logger.debug("← WS unhandled type: \(envelope.type)")
-            break
+            case "dm":
+                guard let dm = try? decoder.decode(IncomingDM.self, from: data) else {
+                    logger.error("← WS failed to decode dm")
+                    return
+                }
+
+                messages.append(ChatMessage(
+                    text: dm.text,
+                    partner: dm.from,
+                    isSent: false,
+                    timestamp: Date(timeIntervalSince1970: TimeInterval(dm.ts) / 1000)
+                ))
+            case "auth_ok":
+                guard let msg = try? decoder.decode(IncomingAuthOK.self, from: data) else {
+                    logger.error("← WS failed to decode auth_ok")
+                    return
+                }
+
+                currentUser = msg.user
+                logger.debug("← WS auth_ok — \(msg.friends.count) friends")
+                friends = msg.friends
+                    .filter { $0.username != msg.user }
+                    .map { Friend(username: $0.username, online: $0.online) }
+            case "friends":
+                guard let msg = try? decoder.decode(IncomingFriendsMessage.self, from: data) else {
+                    logger.error("← WS failed to decode friends")
+                    return
+                }
+
+                friends = msg.friends
+                    .filter { $0.username != currentUser }
+                    .map { Friend(username: $0.username, online: $0.online) }
+            case "dm_sent": break
+            case "pong": logger.debug("← WS pong [\(Date())]")
+            default: logger.debug("← WS unhandled type: \(envelope.type)")
         }
     }
 
@@ -170,6 +177,7 @@ final class DefaultChatService: ChatService {
     private func ping() async {
         guard let json = try? encoder.encode(OutgoingPing()),
               let jsonString = String(data: json, encoding: .utf8) else { return }
+
         logger.debug("→ WS send [\(Date())]: \(jsonString)")
         try? await webSocketClient.send(.text(jsonString))
     }

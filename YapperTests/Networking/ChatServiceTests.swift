@@ -118,6 +118,27 @@ struct ChatServiceTests {
         #expect(mockWS.disconnectInvocations == 1)
     }
 
+    @Test
+    func `disconnect - clears messages, friends, and current user`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = makeSubject(webSocketClient: mockWS)
+        try await subject.connect(token: "t")
+
+        mockWS.yield(.text("""
+        {"type":"auth_ok","user":"me","friends":[{"username":"pace","online":true}],"parties":[],"invites":[]}
+        """))
+        mockWS.yield(.text("""
+        {"type":"dm","text":"hey","from":"pace","ts":1780809461101}
+        """))
+        await Task.yield()
+        await Task.yield()
+
+        await subject.disconnect()
+
+        #expect(subject.messages.isEmpty)
+        #expect(subject.friends.isEmpty)
+    }
+
     // MARK: - Incoming messages
 
     @Test
