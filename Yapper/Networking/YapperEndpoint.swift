@@ -9,6 +9,7 @@ import Foundation
 
 enum YapperEndpoint {
     case login
+    case register
     case webSocket
 
     var url: URL {
@@ -18,6 +19,9 @@ enum YapperEndpoint {
         case .login:
             components.scheme = "https"
             components.path = "/login"
+        case .register:
+            components.scheme = "https"
+            components.path = "/register"
         case .webSocket:
             components.scheme = "wss"
             components.port = 8222

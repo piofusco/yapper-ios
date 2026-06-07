@@ -23,11 +23,11 @@ final class MockAuthService: AuthService {
     }
 
     var createAccountInvocations = 0
-    var lastCreateAccountRequests = [(username: String, password: String)]()
+    var lastCreateAccountRequests = [(username: String, password: String, code: String)]()
     var createAccountError: Error?
-    func createAccount(username: String, password: String) async throws {
+    func createAccount(username: String, password: String, code: String) async throws {
         createAccountInvocations += 1
-        lastCreateAccountRequests.append((username: username, password: password))
+        lastCreateAccountRequests.append((username: username, password: password, code: code))
         if let createAccountError { throw createAccountError }
         isAuthenticated = true
     }

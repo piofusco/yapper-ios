@@ -18,7 +18,8 @@ protocol AuthService: AnyObject {
     ) async throws
     func createAccount(
         username: String,
-        password: String
+        password: String,
+        code: String
     ) async throws
     func logout()
 }
@@ -53,10 +54,18 @@ final class DefaultAuthService: AuthService {
 
     func createAccount(
         username: String,
-        password: String
+        password: String,
+        code: String
     ) async throws {
-        // TODO: wire to dedicated create-account endpoint when available
-        try await login(username: username, password: password)
+        let token = try await apiManager.register(
+            with: RegisterRequest(
+                username: username,
+                password: password,
+                code: code
+            )
+        )
+        self.token = token
+        try tokenStore.save(token)
     }
 
     func logout() {

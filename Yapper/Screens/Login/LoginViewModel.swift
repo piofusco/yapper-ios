@@ -18,6 +18,10 @@ final class LoginViewModel {
     func login(using authService: any AuthService) async throws {
         isLoading = true
         defer { isLoading = false }
-        try await authService.login(username: username, password: password)
+
+        try await authService.login(
+            username: username,
+            password: password
+        )
     }
 }

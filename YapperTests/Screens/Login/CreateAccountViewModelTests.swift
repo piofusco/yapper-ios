@@ -27,12 +27,14 @@ struct CreateAccountViewModelTests {
             let subject = makeSubject()
             subject.username = "pace"
             subject.password = "secret"
+            subject.code = "supersecret"
 
             try await subject.createAccount(using: mockAuthService)
 
             #expect(mockAuthService.createAccountInvocations == 1)
             #expect(mockAuthService.lastCreateAccountRequests.last?.username == "pace")
             #expect(mockAuthService.lastCreateAccountRequests.last?.password == "secret")
+            #expect(mockAuthService.lastCreateAccountRequests.last?.code == "supersecret")
         }
 
         @Test

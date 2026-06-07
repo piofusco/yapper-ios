@@ -20,4 +20,16 @@ final class MockAPIManager: APIManager, @unchecked Sendable {
         if let loginError { throw loginError }
         return nextLoginToken
     }
+
+    var registerInvocations = 0
+    var lastRegisterRequests = [RegisterRequest]()
+    var nextRegisterToken = "mock-token"
+    var registerError: Error?
+
+    func register(with request: RegisterRequest) async throws -> String {
+        registerInvocations += 1
+        lastRegisterRequests.append(request)
+        if let registerError { throw registerError }
+        return nextRegisterToken
+    }
 }

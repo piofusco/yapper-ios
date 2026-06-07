@@ -21,6 +21,8 @@ struct CreateAccountView: View {
                 .autocorrectionDisabled()
             SecureField("Password", text: $viewModel.password)
                 .textFieldStyle(.roundedBorder)
+            SecureField("Access Code", text: $viewModel.code)
+                .textFieldStyle(.roundedBorder)
             Spacer()
             Button {
                 Task {
