@@ -1,5 +1,5 @@
 ---
-name: Burrw
+name: BlabChat
 include:
 - configurations.yml
 options:
@@ -11,12 +11,12 @@ settings:
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: false
     STRING_CATALOG_GENERATE_SYMBOLS: true
 targets:
-  Burrw:
+  BlabChat:
     type: application
     platform: iOS
     deploymentTarget: 18.0
     info:
-      path: Burrw/Info.generated.plist
+      path: BlabChat/Info.generated.plist
       properties:
         ALWAYS_SEARCH_USER_PATHS: false
         CFBundleVersion: '1'
@@ -44,7 +44,7 @@ targets:
         UIViewControllerBasedStatusBarAppearance: true
         VERSIONING_SYSTEM: custom
     sources:
-    - Burrw/
+    - BlabChat/
     settings:
       groups:
       - preset_all
@@ -54,7 +54,7 @@ targets:
         SWIFT_EMIT_LOC_STRINGS: true
         ENABLE_USER_SCRIPT_SANDBOXING: true
         ENABLE_CLANG_MODULE_VERIFIER: true
-        PRODUCT_NAME: Burrw
+        PRODUCT_NAME: BlabChat
         CURRENT_PROJECT_VERSION: '1'
         MARKETING_VERSION: 1.0.0
         CODE_SIGN_IDENTITY: "Apple Development"
@@ -66,15 +66,15 @@ targets:
         SWIFT_VERSION: '6.0'
     attributes:
       BuildIndependentTargetsInParallel: true
-  BurrwTests:
+  BlabChatTests:
     dependencies:
-    - target: Burrw
+    - target: BlabChat
     deploymentTarget: 18.0
     info:
-      path: BurrwTests/Info.generated.plist
+      path: BlabChatTests/Info.generated.plist
     platform: iOS
     sources:
-    - BurrwTests/
+    - BlabChatTests/
     type: bundle.unit-test
 fileGroups:
   - configurations.yml

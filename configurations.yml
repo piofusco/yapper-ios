@@ -11,22 +11,22 @@ settingGroups:
     OTHER_SWIFT_FLAGS:
       - -D RELEASE
   dev_app_target_settings:
-    APP_DISPLAY_NAME: Burrw Dev
+    APP_DISPLAY_NAME: BlabChat Dev
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon_dev
     DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
     DEVELOPMENT_TEAM: A6K9P929M9
     DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
-    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Burrw.debug
+    PRODUCT_BUNDLE_IDENTIFIER: com.americo.BlabChat.debug
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
   release_app_target_settings:
-    APP_DISPLAY_NAME: Burrw
+    APP_DISPLAY_NAME: BlabChat
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon_release
     CODE_SIGN_IDENTITY: "iPhone Distribution"
     DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
     DEVELOPMENT_TEAM: A6K9P929M9
     DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
     ONLY_ACTIVE_ARCH: false
-    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Burrw
+    PRODUCT_BUNDLE_IDENTIFIER: com.americo.BlabChat
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: RELEASE
 
   # The preset_generic settings group is applied to all targets, and provides compiler flags
@@ -61,35 +61,35 @@ settingGroups:
         groups:
           - release_analytics_target_settings
 schemes:
-  Burrw_dev:
+  BlabChat_dev:
     orderHint: 0
     build:
       config: debug
       targets:
-        Burrw: all
+        BlabChat: all
     run:
       config: debug
     archive:
       config: debug
-  Burrw_release:
+  BlabChat_release:
     build:
       config: release
       targets:
-        Burrw: all
+        BlabChat: all
       overrideArchitectures: universal
     run:
       config: release
     archive:
       config: release
-  BurrwTests:
+  BlabChatTests:
     build:
       targets:
-        BurrwTests:
+        BlabChatTests:
         - test
         - run
     test:
       targets:
-        - name: BurrwTests
+        - name: BlabChatTests
           parallelizable: true
           randomExecutionOrder: true
           skippedTests: []

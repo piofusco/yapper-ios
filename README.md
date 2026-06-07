@@ -1,4 +1,4 @@
-#  Yapper iOS
+#  Blab Chat
 
 ## Setup ⚙️
 
@@ -27,8 +27,8 @@ This project uses **Xcode 26.5**.
 
 Yapper supports the following environments, each with its associated bundle ID:
 
-- **Development**: `com.piofusco.Yapper.debug`
-- **Production**: `com.piofusco.Yapper`
+- **Development**: `com.americo.blabchat.debug`
+- **Production**: `com.americo.blabchat`
 
 The project uses compiler directives for each environment:
 
