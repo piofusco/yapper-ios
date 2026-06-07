@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  RootView.swift
 //  Yapper
 //
 //  Created by Michael Pace on 6/6/26.
@@ -23,7 +23,7 @@ struct RootView: View {
             }
             Spacer()
             Button {
-
+                router.route(to: .push(.createAccount))
             } label: {
                 Text("Sign Up")
                     .font(.system(size: 17, weight: .semibold))
@@ -35,7 +35,7 @@ struct RootView: View {
                     .contentShape(.capsule)
             }
             Button {
-
+                router.route(to: .push(.login))
             } label: {
                 Text("Login")
                     .font(.system(size: 17, weight: .semibold))

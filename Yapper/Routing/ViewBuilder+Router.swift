@@ -15,6 +15,8 @@ func view(
 ) -> some View {
     switch destination {
         case .conversation(let id): ConversationView(id: id)
+        case .login: LoginView()
+        case .createAccount: CreateAccountView()
     }
 }
 

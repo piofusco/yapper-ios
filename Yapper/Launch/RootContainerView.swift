@@ -9,80 +9,27 @@ import SwiftUI
 
 struct RootContainerView: View {
     @Environment(\.modelContext) var modelContext
-    
+
     @State var router: Router = Router(level: 0, identifierTab: nil)
     @State private var alertService = AlertService()
+    @State private var authService = DefaultAuthService()
 
     var body: some View {
-        TabView(selection: $router.selectedTab) {
-            Tab(value: TabDestination.example) {
-                NavigationContainer(parentRouter: router, tab: .example) {
-                    ConversationPreviewsListView(
-                        conversationPreviews: [
-                            ConversationPreview(
-                                id: "1",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "2",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "3",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "4",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "5",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "6",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "7",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            ),
-                            ConversationPreview(
-                                id: "3",
-                                author: "Bob Wills",
-                                lastMessagePreview: "I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy. I am a ding dong daddy.",
-                                timestamp: .zero
-                            )
-                        ]
-                    )
+        Group {
+            if authService.isAuthenticated {
+                TabView {
+                    NavigationContainer(parentRouter: router, tab: .conversations) {
+                        ConversationPreviewsListView()
+                    }
+                    .tabItem { Label("Messages", systemImage: "message") }
                 }
-            } label: {
-                Label {
-                    Text("Example")
-                } icon: {
-                    Image(Icon.timer.rawValue)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 25, height: 25)
-                        .clipped()
+            } else {
+                NavigationContainer(parentRouter: router) {
+                    RootView()
                 }
             }
         }
-        .tint(.primary)
+        .environment(authService)
         .environment(alertService)
         .overlay {
             if let content = alertService.current {
