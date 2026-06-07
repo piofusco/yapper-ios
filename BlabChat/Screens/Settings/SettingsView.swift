@@ -34,16 +34,14 @@ struct SettingsView: View {
                 }
             } else {
                 Form {
-                    Button(role: .destructive) {
-                        authService.logout()
-                    } label: {
-                        Text("Log Out")
+                    if let user = chatService.currentUser {
+                        Section {
+                            LabeledContent("Logged in as", value: user)
+                        }
                     }
                 }
             }
         }
-
-        .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 HStack {
@@ -51,6 +49,13 @@ struct SettingsView: View {
                     Circle()
                         .fill(chatService.isConnected ? Color.green : Color.red)
                         .frame(width: 10, height: 10)
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    authService.logout()
+                } label: {
+                    Text("Logout")
                 }
             }
         }

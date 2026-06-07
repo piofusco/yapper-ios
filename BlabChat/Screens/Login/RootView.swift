@@ -16,10 +16,17 @@ struct RootView: View {
             VStack(alignment: .center) {
                 Image(Icon.logo.rawValue)
                     .resizable()
+                    .foregroundStyle(AppColor.orange.color)
                     .frame(width: 100, height: 100)
-                Text("Welcome To BlabChat.")
-                    .fontWeight(.semibold)
-                    .font(.title)
+                HStack {
+                    Text("Welcome To")
+                        .fontWeight(.semibold)
+                        .font(.title)
+                    Text("BlabChat")
+                        .fontWeight(.semibold)
+                        .font(.title)
+                        .foregroundStyle(AppColor.orange.color)
+                }
             }
             Spacer()
             Button {
