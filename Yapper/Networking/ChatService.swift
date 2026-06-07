@@ -7,9 +7,6 @@
 
 import Foundation
 import Observation
-import OSLog
-
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Yapper", category: "WebSocket")
 
 @MainActor
 protocol ChatService: AnyObject {
@@ -35,16 +32,19 @@ final class DefaultChatService: ChatService {
     nonisolated private let webSocketClient: any WebSocketClient
     private let encoder: any ScaffoldJSONEncoder
     private let decoder: any ScaffoldJSONDecoder
+    private let logger: any ScaffoldLogger
     private var listeningTask: Task<Void, Never>?
 
     init(
         webSocketClient: any WebSocketClient = DefaultWebSocketClient(session: URLSession.shared),
         encoder: any ScaffoldJSONEncoder = JSONEncoder(),
-        decoder: any ScaffoldJSONDecoder = JSONDecoder()
+        decoder: any ScaffoldJSONDecoder = JSONDecoder(),
+        logger: any ScaffoldLogger = DefaultLogger(category: "WebSocket")
     ) {
         self.webSocketClient = webSocketClient
         self.encoder = encoder
         self.decoder = decoder
+        self.logger = logger
     }
 
     func connect(

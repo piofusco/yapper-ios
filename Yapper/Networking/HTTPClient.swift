@@ -6,9 +6,6 @@
 //
 
 import Foundation
-import OSLog
-
-private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Yapper", category: "HTTP")
 
 enum NetworkError: Equatable, Error {
     case internalError
@@ -27,13 +24,16 @@ protocol HTTPClient {
 final class DefaultHTTPClient: HTTPClient {
     private let urlSession: ScaffoldURLSession
     private let decoder: ScaffoldJSONDecoder
+    private let logger: any ScaffoldLogger
 
     init(
         urlSession: ScaffoldURLSession = URLSession.shared,
-        decoder: ScaffoldJSONDecoder = JSONDecoder()
+        decoder: ScaffoldJSONDecoder = JSONDecoder(),
+        logger: any ScaffoldLogger = DefaultLogger(category: "HTTP")
     ) {
         self.urlSession = urlSession
         self.decoder = decoder
+        self.logger = logger
     }
 
     func makeRequest<T: Decodable>(
