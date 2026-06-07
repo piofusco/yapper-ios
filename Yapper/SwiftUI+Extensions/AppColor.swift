@@ -12,7 +12,7 @@ enum AppColor: String, CaseIterable, Codable, Identifiable {
     case gray     = "#8E8E93"
     case green    = "#34C759"
     case magenta  = "#FF2D9B"
-    case orange   = "#FF9500"
+    case orange   = "#B8571E"
     case purple   = "#AF52DE"
     case red      = "#FF3B30"
     case teal     = "#5AC8FA"

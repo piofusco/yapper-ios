@@ -36,6 +36,7 @@ enum Icon: String {
     case listHeartFilled
     case listLight
     case locked
+    case logo
     case pause
     case play
     case playFilled
