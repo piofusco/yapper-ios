@@ -11,6 +11,7 @@ enum NetworkError: Equatable, Error {
     case internalError
     case badRequest // 4xx
     case serverError // 5xx
+    case disconnected
 }
 
 protocol HTTPClient {

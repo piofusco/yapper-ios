@@ -43,6 +43,10 @@ targets:
         UIStatusBarHidden: true
         UIViewControllerBasedStatusBarAppearance: true
         VERSIONING_SYSTEM: custom
+        NSAppTransportSecurity:
+          NSExceptionDomains:
+            network.devan.chat:
+              NSExceptionAllowsInsecureHTTPLoads: true
     sources:
     - Yapper/
     settings:
