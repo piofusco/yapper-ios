@@ -60,4 +60,5 @@ enum PushDestination: CustomStringConvertible, Hashable {
 
 enum TabDestination: String, Hashable {
     case conversations
+    case settings
 }

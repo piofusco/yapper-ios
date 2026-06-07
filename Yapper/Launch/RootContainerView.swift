@@ -22,6 +22,11 @@ struct RootContainerView: View {
                         ConversationPreviewsListView()
                     }
                     .tabItem { Label("Messages", systemImage: "message") }
+
+                    NavigationContainer(parentRouter: router, tab: .settings) {
+                        SettingsView()
+                    }
+                    .tabItem { Label("Settings", systemImage: "gearshape") }
                 }
             } else {
                 NavigationContainer(parentRouter: router) {
