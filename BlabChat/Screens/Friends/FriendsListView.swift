@@ -33,9 +33,6 @@ struct FriendsListView: View {
                             .contentShape(.capsule)
                     }
                 }
-            } else if chatService.isAuthenticating {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 List(chatService.friends) { friend in
                     FriendListCell(friend: friend)

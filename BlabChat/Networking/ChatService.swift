@@ -13,7 +13,6 @@ protocol ChatService: AnyObject {
     var messages: [ChatMessage] { get }
     var friends: [Friend] { get }
     var isConnected: Bool { get }
-    var isAuthenticating: Bool { get }
     var currentUser: String? { get }
 
     func connect(
@@ -35,7 +34,6 @@ final class DefaultChatService: ChatService {
     private(set) var messages: [ChatMessage] = []
     private(set) var friends: [Friend] = []
     private(set) var isConnected: Bool = false
-    private(set) var isAuthenticating: Bool = false
     private(set) var currentUser: String?
 
     nonisolated private let webSocketClient: any WebSocketClient
@@ -68,7 +66,6 @@ final class DefaultChatService: ChatService {
 
         logger.debug("← WS connected")
         isConnected = true
-        isAuthenticating = true
         startListening()
         let auth = OutgoingAuth(token: token)
         let json = try encoder.encode(auth)
@@ -120,7 +117,6 @@ final class DefaultChatService: ChatService {
         pingTask = nil
         await webSocketClient.disconnect()
         isConnected = false
-        isAuthenticating = false
         messages = []
         friends = []
         currentUser = nil
@@ -165,7 +161,6 @@ final class DefaultChatService: ChatService {
                     return
                 }
 
-                isAuthenticating = false
                 currentUser = msg.user
                 logger.debug("← WS auth_ok — \(msg.friends.count) friends")
                 friends = msg.friends
@@ -207,7 +202,6 @@ final class DefaultChatService: ChatService {
 
     private func markDisconnected() {
         isConnected = false
-        isAuthenticating = false
         listeningTask = nil
         pingTask?.cancel()
         pingTask = nil

@@ -116,16 +116,6 @@ struct ChatServiceTests {
     }
 
     @Test
-    func `connect - sets isAuthenticating to true`() async throws {
-        let mockWS = MockWebSocketClient()
-        let subject = makeSubject(webSocketClient: mockWS)
-
-        try await subject.connect(token: "t")
-
-        #expect(subject.isAuthenticating == true)
-    }
-
-    @Test
     func `connect - webSocketClient throws - isConnected remains false`() async {
         let mockWS = MockWebSocketClient()
         mockWS.connectError = NetworkError.internalError
@@ -134,17 +124,6 @@ struct ChatServiceTests {
         try? await subject.connect(token: "t")
 
         #expect(subject.isConnected == false)
-    }
-
-    @Test
-    func `connect - webSocketClient throws - isAuthenticating remains false`() async {
-        let mockWS = MockWebSocketClient()
-        mockWS.connectError = NetworkError.internalError
-        let subject = makeSubject(webSocketClient: mockWS)
-
-        try? await subject.connect(token: "t")
-
-        #expect(subject.isAuthenticating == false)
     }
 
     // MARK: - refresh(token:)
@@ -198,24 +177,9 @@ struct ChatServiceTests {
         #expect(subject.messages.isEmpty)
         #expect(subject.friends.isEmpty)
         #expect(subject.isConnected == false)
-        #expect(subject.isAuthenticating == false)
     }
 
     // MARK: - Incoming messages
-
-    @Test
-    func `auth_ok - sets isAuthenticating to false`() async throws {
-        let mockWS = MockWebSocketClient()
-        let subject = makeSubject(webSocketClient: mockWS)
-        try await subject.connect(token: "t")
-
-        mockWS.yield(.text("""
-        {"type":"auth_ok","user":"me","friends":[],"parties":[],"invites":[]}
-        """))
-        await Task.yield()
-
-        #expect(subject.isAuthenticating == false)
-    }
 
     @Test
     func `auth_ok - populates friends`() async throws {
@@ -316,18 +280,6 @@ struct ChatServiceTests {
         await Task.yield()
 
         #expect(subject.isConnected == false)
-    }
-
-    @Test
-    func `stream error - sets isAuthenticating to false`() async throws {
-        let mockWS = MockWebSocketClient()
-        let subject = makeSubject(webSocketClient: mockWS)
-        try await subject.connect(token: "t")
-
-        mockWS.finish(throwing: NetworkError.disconnected)
-        await Task.yield()
-
-        #expect(subject.isAuthenticating == false)
     }
 
     @Test
