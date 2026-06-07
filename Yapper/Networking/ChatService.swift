@@ -34,18 +34,22 @@ final class DefaultChatService: ChatService {
     private let encoder: any ScaffoldJSONEncoder
     private let decoder: any ScaffoldJSONDecoder
     private let logger: any ScaffoldLogger
+    private let pingInterval: Duration
     private var listeningTask: Task<Void, Never>?
+    private var pingTask: Task<Void, Never>?
 
     init(
         webSocketClient: any WebSocketClient = DefaultWebSocketClient(session: URLSession.shared),
         encoder: any ScaffoldJSONEncoder = JSONEncoder(),
         decoder: any ScaffoldJSONDecoder = JSONDecoder(),
-        logger: any ScaffoldLogger = DefaultLogger(category: "WebSocket")
+        logger: any ScaffoldLogger = DefaultLogger(category: "WebSocket"),
+        pingInterval: Duration = .seconds(30)
     ) {
         self.webSocketClient = webSocketClient
         self.encoder = encoder
         self.decoder = decoder
         self.logger = logger
+        self.pingInterval = pingInterval
     }
 
     func connect(
@@ -61,6 +65,7 @@ final class DefaultChatService: ChatService {
         guard let jsonString = String(data: json, encoding: .utf8) else { return }
         logger.debug("→ WS send: \(jsonString)")
         try await webSocketClient.send(.text(jsonString))
+        startPinging()
     }
 
     func send(
@@ -88,6 +93,8 @@ final class DefaultChatService: ChatService {
     func disconnect() async {
         listeningTask?.cancel()
         listeningTask = nil
+        pingTask?.cancel()
+        pingTask = nil
         await webSocketClient.disconnect()
     }
 
@@ -139,10 +146,32 @@ final class DefaultChatService: ChatService {
             friends = msg.friends
                 .filter { $0.username != currentUser }
                 .map { Friend(username: $0.username, online: $0.online) }
+        case "dm_sent":
+            break
+        case "pong":
+            logger.debug("← WS pong [\(Date())]")
         default:
             logger.debug("← WS unhandled type: \(envelope.type)")
             break
         }
+    }
+
+    private func startPinging() {
+        let interval = pingInterval
+        pingTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: interval)
+                guard !Task.isCancelled else { return }
+                await self?.ping()
+            }
+        }
+    }
+
+    private func ping() async {
+        guard let json = try? encoder.encode(OutgoingPing()),
+              let jsonString = String(data: json, encoding: .utf8) else { return }
+        logger.debug("→ WS send [\(Date())]: \(jsonString)")
+        try? await webSocketClient.send(.text(jsonString))
     }
 
     private func markDisconnected() {

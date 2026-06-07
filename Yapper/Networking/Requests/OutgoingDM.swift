@@ -8,7 +8,7 @@
 import Foundation
 
 struct OutgoingDM: Encodable {
-    let type = "dm_sent"
+    let type = "dm"
     let text: String
     let to: String
     let ts: Int64

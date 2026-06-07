@@ -90,7 +90,7 @@ struct ChatServiceTests {
         }
         #expect(json.contains("\"text\":\"hello\""))
         #expect(json.contains("\"to\":\"pace\""))
-        #expect(json.contains("\"type\":\"dm_sent\""))
+        #expect(json.contains("\"type\":\"dm\""))
     }
 
     @Test
@@ -186,6 +186,59 @@ struct ChatServiceTests {
 
         #expect(subject.friends.count == 1)
         #expect(subject.friends.first?.username == "pace")
+    }
+
+    // MARK: - Ping
+
+    @Test
+    func `ping - sends ping message after interval`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = DefaultChatService(
+            webSocketClient: mockWS,
+            logger: MockLogger(),
+            pingInterval: .milliseconds(50)
+        )
+        try await subject.connect(token: "t")
+
+        try await Task.sleep(for: .milliseconds(100))
+
+        let sentPings = mockWS.lastSentMessages.filter {
+            if case .text(let json) = $0 { return json.contains("\"type\":\"ping\"") }
+            return false
+        }
+        #expect(!sentPings.isEmpty)
+    }
+
+    @Test
+    func `disconnect - cancels ping task`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = DefaultChatService(
+            webSocketClient: mockWS,
+            logger: MockLogger(),
+            pingInterval: .milliseconds(50)
+        )
+        try await subject.connect(token: "t")
+        await subject.disconnect()
+        let countAfterDisconnect = mockWS.sendInvocations
+
+        try await Task.sleep(for: .milliseconds(150))
+
+        #expect(mockWS.sendInvocations == countAfterDisconnect)
+    }
+
+    @Test
+    func `pong - does not crash`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = makeSubject(webSocketClient: mockWS)
+        try await subject.connect(token: "t")
+
+        mockWS.yield(.text("""
+        {"type":"pong"}
+        """))
+        await Task.yield()
+
+        #expect(subject.messages.isEmpty)
+        #expect(subject.friends.isEmpty)
     }
 
     @Test
