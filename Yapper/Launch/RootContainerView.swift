@@ -20,9 +20,9 @@ struct RootContainerView: View {
             if authService.isAuthenticated {
                 TabView {
                     NavigationContainer(parentRouter: router, tab: .conversations) {
-                        ConversationPreviewsListView()
+                        FriendsListView()
                     }
-                    .tabItem { Label("Messages", systemImage: "message") }
+                    .tabItem { Label("Friends", systemImage: "person.2") }
 
                     NavigationContainer(parentRouter: router, tab: .settings) {
                         SettingsView()

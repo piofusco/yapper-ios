@@ -70,3 +70,5 @@ Auth: `type=auth` must succeed before any other command (else `error/not_authent
 
 ## Server → Client
 
+TODO
+- post login networking

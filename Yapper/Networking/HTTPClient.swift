@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Yapper", category: "HTTP")
 
 enum NetworkError: Equatable, Error {
     case internalError
@@ -41,8 +44,10 @@ final class DefaultHTTPClient: HTTPClient {
 
         while true {
             do {
+                logger.debug("→ \(request.httpMethod ?? "?") \(request.url?.absoluteString ?? "?")")
                 let (data, response) = try await urlSession.data(for: request)
                 guard let response = response as? HTTPURLResponse else { throw NetworkError.internalError }
+                logger.debug("← \(response.statusCode) \(request.url?.absoluteString ?? "?")")
 
                 switch response.statusCode {
                     case 200...299: return try decoder.decode(T.self, from: data)
@@ -53,6 +58,7 @@ final class DefaultHTTPClient: HTTPClient {
             } catch NetworkError.badRequest {
                 throw NetworkError.badRequest
             } catch {
+                logger.error("✗ \(request.url?.absoluteString ?? "?") — \(error)")
                 if attempt >= retries || error is DecodingError { throw error }
 
                 attempt += 1

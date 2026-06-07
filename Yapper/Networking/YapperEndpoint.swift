@@ -10,7 +10,7 @@ import Foundation
 enum YapperEndpoint {
     case login
     case register
-    case webSocket(token: String)
+    case webSocket
 
     var url: URL {
         var components = URLComponents()
@@ -22,11 +22,9 @@ enum YapperEndpoint {
         case .register:
             components.scheme = "https"
             components.path = "/register"
-        case .webSocket(let token):
+        case .webSocket:
             components.scheme = "wss"
-            components.port = 8222
             components.path = "/ws"
-            components.queryItems = [URLQueryItem(name: "token", value: token)]
         }
         return components.url!
     }
