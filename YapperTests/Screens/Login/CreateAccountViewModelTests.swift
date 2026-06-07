@@ -22,13 +22,13 @@ struct CreateAccountViewModelTests {
         }
 
         @Test
-        func `createAccount - success - calls authService with correct credentials`() async {
+        func `createAccount - success - calls authService with correct credentials`() async throws {
             let mockAuthService = MockAuthService()
             let subject = makeSubject()
             subject.username = "pace"
             subject.password = "secret"
 
-            await subject.createAccount(using: mockAuthService)
+            try await subject.createAccount(using: mockAuthService)
 
             #expect(mockAuthService.createAccountInvocations == 1)
             #expect(mockAuthService.lastCreateAccountRequests.last?.username == "pace")
@@ -36,34 +36,23 @@ struct CreateAccountViewModelTests {
         }
 
         @Test
-        func `createAccount - success - isLoading is false after`() async {
-            let mockAuthService = MockAuthService()
+        func `createAccount - success - isLoading is false after`() async throws {
             let subject = makeSubject()
 
-            await subject.createAccount(using: mockAuthService)
+            try await subject.createAccount(using: MockAuthService())
 
             #expect(!subject.isLoading)
         }
 
         @Test
-        func `createAccount - success - errorMessage is nil`() async {
-            let mockAuthService = MockAuthService()
-            let subject = makeSubject()
-
-            await subject.createAccount(using: mockAuthService)
-
-            #expect(subject.errorMessage == nil)
-        }
-
-        @Test
-        func `createAccount - authService throws - sets errorMessage`() async {
+        func `createAccount - authService throws - rethrows`() async {
             let mockAuthService = MockAuthService()
             mockAuthService.createAccountError = NetworkError.badRequest
             let subject = makeSubject()
 
-            await subject.createAccount(using: mockAuthService)
-
-            #expect(subject.errorMessage != nil)
+            await #expect(throws: NetworkError.badRequest) {
+                try await subject.createAccount(using: mockAuthService)
+            }
         }
 
         @Test
@@ -72,23 +61,9 @@ struct CreateAccountViewModelTests {
             mockAuthService.createAccountError = NetworkError.badRequest
             let subject = makeSubject()
 
-            await subject.createAccount(using: mockAuthService)
+            try? await subject.createAccount(using: mockAuthService)
 
             #expect(!subject.isLoading)
-        }
-
-        @Test
-        func `createAccount - error then success - clears errorMessage`() async {
-            let mockAuthService = MockAuthService()
-            mockAuthService.createAccountError = NetworkError.badRequest
-            let subject = makeSubject()
-            await subject.createAccount(using: mockAuthService)
-            #expect(subject.errorMessage != nil)
-
-            mockAuthService.createAccountError = nil
-            await subject.createAccount(using: mockAuthService)
-
-            #expect(subject.errorMessage == nil)
         }
     }
 }

@@ -22,13 +22,13 @@ struct LoginViewModelTests {
         }
 
         @Test
-        func `login - success - calls authService with correct credentials`() async {
+        func `login - success - calls authService with correct credentials`() async throws {
             let mockAuthService = MockAuthService()
             let subject = makeSubject()
             subject.username = "pace"
             subject.password = "secret"
 
-            await subject.login(using: mockAuthService)
+            try await subject.login(using: mockAuthService)
 
             #expect(mockAuthService.loginInvocations == 1)
             #expect(mockAuthService.lastLoginRequests.last?.username == "pace")
@@ -36,34 +36,23 @@ struct LoginViewModelTests {
         }
 
         @Test
-        func `login - success - isLoading is false after`() async {
-            let mockAuthService = MockAuthService()
+        func `login - success - isLoading is false after`() async throws {
             let subject = makeSubject()
 
-            await subject.login(using: mockAuthService)
+            try await subject.login(using: MockAuthService())
 
             #expect(!subject.isLoading)
         }
 
         @Test
-        func `login - success - errorMessage is nil`() async {
-            let mockAuthService = MockAuthService()
-            let subject = makeSubject()
-
-            await subject.login(using: mockAuthService)
-
-            #expect(subject.errorMessage == nil)
-        }
-
-        @Test
-        func `login - authService throws - sets errorMessage`() async {
+        func `login - authService throws - rethrows`() async {
             let mockAuthService = MockAuthService()
             mockAuthService.loginError = NetworkError.badRequest
             let subject = makeSubject()
 
-            await subject.login(using: mockAuthService)
-
-            #expect(subject.errorMessage != nil)
+            await #expect(throws: NetworkError.badRequest) {
+                try await subject.login(using: mockAuthService)
+            }
         }
 
         @Test
@@ -72,23 +61,9 @@ struct LoginViewModelTests {
             mockAuthService.loginError = NetworkError.badRequest
             let subject = makeSubject()
 
-            await subject.login(using: mockAuthService)
+            try? await subject.login(using: mockAuthService)
 
             #expect(!subject.isLoading)
-        }
-
-        @Test
-        func `login - error then success - clears errorMessage`() async {
-            let mockAuthService = MockAuthService()
-            mockAuthService.loginError = NetworkError.badRequest
-            let subject = makeSubject()
-            await subject.login(using: mockAuthService)
-            #expect(subject.errorMessage != nil)
-
-            mockAuthService.loginError = nil
-            await subject.login(using: mockAuthService)
-
-            #expect(subject.errorMessage == nil)
         }
     }
 }

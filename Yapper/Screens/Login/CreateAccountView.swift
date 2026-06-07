@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CreateAccountView: View {
     @Environment(DefaultAuthService.self) private var authService
+    @Environment(AlertService.self) private var alertService
     @State private var viewModel = CreateAccountViewModel()
 
     var body: some View {
@@ -20,14 +21,15 @@ struct CreateAccountView: View {
                 .autocorrectionDisabled()
             SecureField("Password", text: $viewModel.password)
                 .textFieldStyle(.roundedBorder)
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .foregroundStyle(.red)
-                    .font(.footnote)
-            }
             Spacer()
             Button {
-                Task { await viewModel.createAccount(using: authService) }
+                Task {
+                    do {
+                        try await viewModel.createAccount(using: authService)
+                    } catch {
+                        alertService.show(title: "Sign Up Failed", message: error.localizedDescription)
+                    }
+                }
             } label: {
                 Group {
                     if viewModel.isLoading {
@@ -60,4 +62,5 @@ struct CreateAccountView: View {
     }
     .environment(Router.previewRouter())
     .environment(DefaultAuthService())
+    .environment(AlertService())
 }

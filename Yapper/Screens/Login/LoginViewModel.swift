@@ -14,16 +14,10 @@ final class LoginViewModel {
     var username = ""
     var password = ""
     var isLoading = false
-    var errorMessage: String?
 
-    func login(using authService: any AuthService) async {
+    func login(using authService: any AuthService) async throws {
         isLoading = true
-        errorMessage = nil
         defer { isLoading = false }
-        do {
-            try await authService.login(username: username, password: password)
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        try await authService.login(username: username, password: password)
     }
 }

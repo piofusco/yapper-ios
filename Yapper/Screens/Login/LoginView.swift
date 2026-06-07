@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     @Environment(DefaultAuthService.self) private var authService
+    @Environment(AlertService.self) private var alertService
     @State private var viewModel = LoginViewModel()
 
     var body: some View {
@@ -20,14 +21,15 @@ struct LoginView: View {
                 .autocorrectionDisabled()
             SecureField("Password", text: $viewModel.password)
                 .textFieldStyle(.roundedBorder)
-            if let errorMessage = viewModel.errorMessage {
-                Text(errorMessage)
-                    .foregroundStyle(.red)
-                    .font(.footnote)
-            }
             Spacer()
             Button {
-                Task { await viewModel.login(using: authService) }
+                Task {
+                    do {
+                        try await viewModel.login(using: authService)
+                    } catch {
+                        alertService.show(title: "Login Failed", message: error.localizedDescription)
+                    }
+                }
             } label: {
                 Group {
                     if viewModel.isLoading {
@@ -60,4 +62,5 @@ struct LoginView: View {
     }
     .environment(Router.previewRouter())
     .environment(DefaultAuthService())
+    .environment(AlertService())
 }
