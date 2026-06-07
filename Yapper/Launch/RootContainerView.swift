@@ -13,6 +13,7 @@ struct RootContainerView: View {
     @State var router: Router = Router(level: 0, identifierTab: nil)
     @State private var alertService = AlertService()
     @State private var authService = DefaultAuthService()
+    @State private var chatService = DefaultChatService()
 
     var body: some View {
         Group {
@@ -35,7 +36,15 @@ struct RootContainerView: View {
             }
         }
         .environment(authService)
+        .environment(chatService)
         .environment(alertService)
+        .task(id: authService.isAuthenticated) {
+            if authService.isAuthenticated, let token = authService.token {
+                try? await chatService.connect(token: token)
+            } else {
+                await chatService.disconnect()
+            }
+        }
         .overlay {
             if let content = alertService.current {
                 AlertView(content: content) { alertService.dismiss() }

@@ -18,7 +18,7 @@ enum WebSocketConnectionState: Equatable {
     case disconnected
 }
 
-protocol WebSocketClient: AnyObject {
+protocol WebSocketClient: AnyObject, Sendable {
     var connectionState: WebSocketConnectionState { get async }
     var messages: AsyncThrowingStream<WebSocketMessage, Error> { get }
 

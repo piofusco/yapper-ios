@@ -7,151 +7,70 @@
 
 import SwiftUI
 
-struct Conversation {
-    let id: String
-    let title: String
-}
-
 struct ConversationView: View {
-    @Environment(\.dismiss) var dismiss
-    @State private var text: String = ""
+    @Environment(DefaultChatService.self) private var chatService
+    @Environment(AlertService.self) private var alertService
+    @State private var viewModel = ConversationViewModel()
 
-    private let id: String
+    private let recipient: String
 
-    init(
-        id: String,
-        text: String = ""
-    ) {
-        self.id = id
-        _text = State(initialValue: text)
+    init(recipient: String) {
+        self.recipient = recipient
+    }
+
+    private var messages: [ChatMessage] {
+        chatService.messages.filter { $0.partner == recipient }
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading) {
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(message: Message(author: "Miller", text: "Sup", date: .now))
-                MessageView(
-                    message: Message(
-                        author: "Miller",
-                        text: "Sup",
-                        date: .now
-                    ),
-                    isSelf: true
-                )
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVStack(alignment: .leading) {
+                    ForEach(messages) { chatMessage in
+                        MessageView(
+                            message: Message(
+                                author: chatMessage.partner,
+                                text: chatMessage.text,
+                                date: chatMessage.timestamp
+                            ),
+                            isSelf: chatMessage.isSent
+                        )
+                        .id(chatMessage.id)
+                    }
+                }
+                .padding(.top, 10)
             }
-            .padding(.top, 10)
+            .scrollDismissesKeyboard(.interactively)
+            .onChange(of: messages.count) {
+                if let last = messages.last {
+                    withAnimation { proxy.scrollTo(last.id, anchor: .bottom) }
+                }
+            }
         }
-        .scrollDismissesKeyboard(.interactively)
         .safeAreaInset(edge: .bottom) {
-            GrowingTextInput(text: $text) {
-                print("Hello")
+            GrowingTextInput(text: $viewModel.inputText) {
+                Task {
+                    do {
+                        try await viewModel.send(to: recipient, using: chatService)
+                    } catch {
+                        alertService.show(title: "Failed to send", message: error.localizedDescription)
+                    }
+                }
             }
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("Title")
+                Text(recipient)
             }
         }
         .toolbar(.hidden, for: .tabBar)
-    }
-
-    private var profileImage: some View {
-        Image(systemName: "person.fill")
-            .resizable()
-            .frame(width: 25, height: 25)
-            .padding(5)
-            .background(.gray)
-            .foregroundColor(.white)
-            .clipShape(Circle())
     }
 }
 
 #Preview {
     NavigationStack {
-        ConversationView(
-            id: "1",
-            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-        )
+        ConversationView(recipient: "pace")
     }
+    .environment(DefaultChatService())
+    .environment(AlertService())
 }
