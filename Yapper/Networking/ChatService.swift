@@ -28,6 +28,7 @@ protocol ChatService: AnyObject {
 final class DefaultChatService: ChatService {
     private(set) var messages: [ChatMessage] = []
     private(set) var friends: [Friend] = []
+    private var currentUser: String?
 
     nonisolated private let webSocketClient: any WebSocketClient
     private let encoder: any ScaffoldJSONEncoder
@@ -66,21 +67,22 @@ final class DefaultChatService: ChatService {
         text: String,
         to recipient: String
     ) async throws {
+        let timestamp = Date()
+        messages.append(ChatMessage(
+            text: text,
+            partner: recipient,
+            isSent: true,
+            timestamp: timestamp
+        ))
         let dm = OutgoingDM(
             text: text,
             to: recipient,
-            ts: Int64(Date().timeIntervalSince1970 * 1000)
+            ts: Int64(timestamp.timeIntervalSince1970 * 1000)
         )
         let json = try encoder.encode(dm)
         guard let jsonString = String(data: json, encoding: .utf8) else { return }
         logger.debug("→ WS send: \(jsonString)")
         try await webSocketClient.send(.text(jsonString))
-        messages.append(ChatMessage(
-            text: text,
-            partner: recipient,
-            isSent: true,
-            timestamp: Date()
-        ))
     }
 
     func disconnect() async {
@@ -124,14 +126,19 @@ final class DefaultChatService: ChatService {
                 logger.error("← WS failed to decode auth_ok")
                 return
             }
+            currentUser = msg.user
             logger.debug("← WS auth_ok — \(msg.friends.count) friends")
-            friends = msg.friends.map { Friend(username: $0.username, online: $0.online) }
+            friends = msg.friends
+                .filter { $0.username != msg.user }
+                .map { Friend(username: $0.username, online: $0.online) }
         case "friends":
             guard let msg = try? decoder.decode(IncomingFriendsMessage.self, from: data) else {
                 logger.error("← WS failed to decode friends")
                 return
             }
-            friends = msg.friends.map { Friend(username: $0.username, online: $0.online) }
+            friends = msg.friends
+                .filter { $0.username != currentUser }
+                .map { Friend(username: $0.username, online: $0.online) }
         default:
             logger.debug("← WS unhandled type: \(envelope.type)")
             break

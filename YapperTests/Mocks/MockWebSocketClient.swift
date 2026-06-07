@@ -12,9 +12,18 @@ import Foundation
 final class MockWebSocketClient: WebSocketClient {
     var connectionState: WebSocketConnectionState = .disconnected
     let messages: AsyncThrowingStream<WebSocketMessage, Error>
+    private let continuation: AsyncThrowingStream<WebSocketMessage, Error>.Continuation
 
     init() {
-        (messages, _) = AsyncThrowingStream.makeStream(of: WebSocketMessage.self)
+        (messages, continuation) = AsyncThrowingStream.makeStream(of: WebSocketMessage.self)
+    }
+
+    func yield(_ message: WebSocketMessage) {
+        continuation.yield(message)
+    }
+
+    func finish(throwing error: Error? = nil) {
+        continuation.finish(throwing: error)
     }
 
     var connectInvocations = 0

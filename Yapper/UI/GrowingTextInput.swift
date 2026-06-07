@@ -13,9 +13,7 @@ struct GrowingTextInput: View {
 
     private let minHeight: CGFloat = 36
 
-    @State private var measuredHeight: CGFloat = 36 {
-        didSet { print("measuredHeight: \(measuredHeight)") }
-    }
+    @State private var measuredHeight: CGFloat = 36
 
     var body: some View {
         HStack(alignment: .bottom, spacing: 8) {
@@ -30,11 +28,9 @@ struct GrowingTextInput: View {
                         GeometryReader { geo in
                             Color.clear.onAppear {
                                 measuredHeight = max(geo.size.height, minHeight)
-                                print("Comparing geo.size.height, minHeight: \(geo.size.height), \(minHeight)")
                             }
                             .onChange(of: text) {
                                 measuredHeight = max(geo.size.height, minHeight)
-                                print("Comparing geo.size.height, minHeight: \(geo.size.height), \(minHeight)")
                             }
                         }
                     )
@@ -50,7 +46,6 @@ struct GrowingTextInput: View {
             Button {
                 guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
                 onSubmit()
-                text = ""
             } label: {
                 Image(systemName: "arrow.up.circle.fill")
                     .font(.system(size: 30))

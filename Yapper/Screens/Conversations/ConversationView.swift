@@ -10,16 +10,19 @@ import SwiftUI
 struct ConversationView: View {
     @Environment(DefaultChatService.self) private var chatService
     @Environment(AlertService.self) private var alertService
+
     @State private var viewModel = ConversationViewModel()
+
+    private var messages: [ChatMessage] {
+        chatService.messages.filter { $0.partner == recipient  }
+    }
 
     private let recipient: String
 
-    init(recipient: String) {
+    init(
+        recipient: String
+    ) {
         self.recipient = recipient
-    }
-
-    private var messages: [ChatMessage] {
-        chatService.messages.filter { $0.partner == recipient }
     }
 
     var body: some View {
