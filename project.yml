@@ -1,5 +1,5 @@
 ---
-name: Yapper
+name: Burrw
 include:
 - configurations.yml
 options:
@@ -11,12 +11,12 @@ settings:
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: false
     STRING_CATALOG_GENERATE_SYMBOLS: true
 targets:
-  Yapper:
+  Burrw:
     type: application
     platform: iOS
     deploymentTarget: 18.0
     info:
-      path: Yapper/Info.generated.plist
+      path: Burrw/Info.generated.plist
       properties:
         ALWAYS_SEARCH_USER_PATHS: false
         CFBundleVersion: '1'
@@ -44,7 +44,7 @@ targets:
         UIViewControllerBasedStatusBarAppearance: true
         VERSIONING_SYSTEM: custom
     sources:
-    - Yapper/
+    - Burrw/
     settings:
       groups:
       - preset_all
@@ -54,7 +54,7 @@ targets:
         SWIFT_EMIT_LOC_STRINGS: true
         ENABLE_USER_SCRIPT_SANDBOXING: true
         ENABLE_CLANG_MODULE_VERIFIER: true
-        PRODUCT_NAME: Yapper
+        PRODUCT_NAME: Burrw
         CURRENT_PROJECT_VERSION: '1'
         MARKETING_VERSION: 1.0.0
         CODE_SIGN_IDENTITY: "Apple Development"
@@ -66,15 +66,15 @@ targets:
         SWIFT_VERSION: '6.0'
     attributes:
       BuildIndependentTargetsInParallel: true
-  YapperTests:
+  BurrwTests:
     dependencies:
-    - target: Yapper
+    - target: Burrw
     deploymentTarget: 18.0
     info:
-      path: YapperTests/Info.generated.plist
+      path: BurrwTests/Info.generated.plist
     platform: iOS
     sources:
-    - YapperTests/
+    - BurrwTests/
     type: bundle.unit-test
 fileGroups:
   - configurations.yml

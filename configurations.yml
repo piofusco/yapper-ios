@@ -11,22 +11,22 @@ settingGroups:
     OTHER_SWIFT_FLAGS:
       - -D RELEASE
   dev_app_target_settings:
-    APP_DISPLAY_NAME: Yapper Dev
+    APP_DISPLAY_NAME: Burrw Dev
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon_dev
     DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
     DEVELOPMENT_TEAM: A6K9P929M9
     DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
-    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Yapper.debug
+    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Burrw.debug
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
   release_app_target_settings:
-    APP_DISPLAY_NAME: Yapper
+    APP_DISPLAY_NAME: Burrw
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon_release
     CODE_SIGN_IDENTITY: "iPhone Distribution"
     DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
     DEVELOPMENT_TEAM: A6K9P929M9
     DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
     ONLY_ACTIVE_ARCH: false
-    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Yapper
+    PRODUCT_BUNDLE_IDENTIFIER: com.americo.Burrw
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: RELEASE
 
   # The preset_generic settings group is applied to all targets, and provides compiler flags
@@ -61,35 +61,35 @@ settingGroups:
         groups:
           - release_analytics_target_settings
 schemes:
-  Yapper_dev:
+  Burrw_dev:
     orderHint: 0
     build:
       config: debug
       targets:
-        Yapper: all
+        Burrw: all
     run:
       config: debug
     archive:
       config: debug
-  Yapper_release:
+  Burrw_release:
     build:
       config: release
       targets:
-        Yapper: all
+        Burrw: all
       overrideArchitectures: universal
     run:
       config: release
     archive:
       config: release
-  YapperTests:
+  BurrwTests:
     build:
       targets:
-        YapperTests:
+        BurrwTests:
         - test
         - run
     test:
       targets:
-        - name: YapperTests
+        - name: BurrwTests
           parallelizable: true
           randomExecutionOrder: true
           skippedTests: []
