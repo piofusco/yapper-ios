@@ -26,17 +26,6 @@
 	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSAppTransportSecurity</key>
-	<dict>
-		<key>NSExceptionDomains</key>
-		<dict>
-			<key>network.devan.chat</key>
-			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
-				<true/>
-			</dict>
-		</dict>
-	</dict>
 	<key>SUPPORTED_PLATFORMS</key>
 	<string>iphoneos iphonesimulator</string>
 	<key>SUPPORTS_MACCATALYST</key>
