@@ -16,7 +16,7 @@ settingGroups:
     DEBUG_INFORMATION_FORMAT: dwarf-with-dsym
     DEVELOPMENT_TEAM: A6K9P929M9
     DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
-    PRODUCT_BUNDLE_IDENTIFIER: com.americo.BlabChat.debug
+    PRODUCT_BUNDLE_IDENTIFIER: io.americo.BlabChat.debug
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: DEBUG
   release_app_target_settings:
     APP_DISPLAY_NAME: BlabChat
@@ -26,7 +26,7 @@ settingGroups:
     DEVELOPMENT_TEAM: A6K9P929M9
     DEVELOPMENT_TEAM[sdk=iphoneos*]: A6K9P929M9
     ONLY_ACTIVE_ARCH: false
-    PRODUCT_BUNDLE_IDENTIFIER: com.americo.BlabChat
+    PRODUCT_BUNDLE_IDENTIFIER: io.americo.BlabChat
     SWIFT_ACTIVE_COMPILATION_CONDITIONS: RELEASE
 
   # The preset_generic settings group is applied to all targets, and provides compiler flags
