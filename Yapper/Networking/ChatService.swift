@@ -11,6 +11,7 @@ import Observation
 @MainActor
 protocol ChatService: AnyObject {
     var messages: [ChatMessage] { get }
+    var friends: [Friend] { get }
 
     func connect(
         token: String
@@ -26,6 +27,7 @@ protocol ChatService: AnyObject {
 @MainActor
 final class DefaultChatService: ChatService {
     private(set) var messages: [ChatMessage] = []
+    private(set) var friends: [Friend] = []
 
     nonisolated private let webSocketClient: any WebSocketClient
     private var listeningTask: Task<Void, Never>?
@@ -85,17 +87,29 @@ final class DefaultChatService: ChatService {
     private func handle(_ message: WebSocketMessage) {
         guard case .text(let json) = message,
               let data = json.data(using: .utf8),
-              let dm = try? JSONDecoder().decode(IncomingDM.self, from: data),
-              dm.type == "dm" else { return }
-        messages.append(ChatMessage(
-            text: dm.text,
-            partner: dm.from,
-            isSent: false,
-            timestamp: Date(timeIntervalSince1970: TimeInterval(dm.ts) / 1000)
-        ))
+              let envelope = try? JSONDecoder().decode(IncomingEnvelope.self, from: data) else { return }
+        switch envelope.type {
+        case "dm":
+            guard let dm = try? JSONDecoder().decode(IncomingDM.self, from: data) else { return }
+            messages.append(ChatMessage(
+                text: dm.text,
+                partner: dm.from,
+                isSent: false,
+                timestamp: Date(timeIntervalSince1970: TimeInterval(dm.ts) / 1000)
+            ))
+        case "friends":
+            guard let msg = try? JSONDecoder().decode(IncomingFriendsMessage.self, from: data) else { return }
+            friends = msg.friends.map { Friend(username: $0.username, online: $0.online) }
+        default:
+            break
+        }
     }
 
     private func markDisconnected() {
         listeningTask = nil
     }
+}
+
+private struct IncomingEnvelope: Decodable {
+    let type: String
 }
