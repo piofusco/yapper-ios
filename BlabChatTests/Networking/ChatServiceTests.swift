@@ -105,6 +105,45 @@ struct ChatServiceTests {
         #expect(subject.messages.count == 1)
     }
 
+    @Test
+    func `connect - sets isConnected to true`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = makeSubject(webSocketClient: mockWS)
+
+        try await subject.connect(token: "t")
+
+        #expect(subject.isConnected == true)
+    }
+
+    @Test
+    func `connect - webSocketClient throws - isConnected remains false`() async {
+        let mockWS = MockWebSocketClient()
+        mockWS.connectError = NetworkError.internalError
+        let subject = makeSubject(webSocketClient: mockWS)
+
+        try? await subject.connect(token: "t")
+
+        #expect(subject.isConnected == false)
+    }
+
+    // MARK: - refresh(token:)
+
+    @Test
+    func `refresh - sends auth message`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = makeSubject(webSocketClient: mockWS)
+        try await subject.connect(token: "t")
+
+        try await subject.refresh(token: "new-token")
+
+        guard case .text(let json) = mockWS.lastSentMessages.last else {
+            Issue.record("Expected a text WebSocket message")
+            return
+        }
+        #expect(json.contains("\"type\":\"auth\""))
+        #expect(json.contains("\"token\":\"new-token\""))
+    }
+
     // MARK: - disconnect()
 
     @Test
@@ -137,6 +176,7 @@ struct ChatServiceTests {
 
         #expect(subject.messages.isEmpty)
         #expect(subject.friends.isEmpty)
+        #expect(subject.isConnected == false)
     }
 
     // MARK: - Incoming messages
@@ -228,6 +268,18 @@ struct ChatServiceTests {
             return false
         }
         #expect(!sentPings.isEmpty)
+    }
+
+    @Test
+    func `stream error - sets isConnected to false`() async throws {
+        let mockWS = MockWebSocketClient()
+        let subject = makeSubject(webSocketClient: mockWS)
+        try await subject.connect(token: "t")
+
+        mockWS.finish(throwing: NetworkError.disconnected)
+        await Task.yield()
+
+        #expect(subject.isConnected == false)
     }
 
     @Test

@@ -12,8 +12,12 @@ import Observation
 protocol ChatService: AnyObject {
     var messages: [ChatMessage] { get }
     var friends: [Friend] { get }
+    var isConnected: Bool { get }
 
     func connect(
+        token: String
+    ) async throws
+    func refresh(
         token: String
     ) async throws
     func send(
@@ -28,6 +32,7 @@ protocol ChatService: AnyObject {
 final class DefaultChatService: ChatService {
     private(set) var messages: [ChatMessage] = []
     private(set) var friends: [Friend] = []
+    private(set) var isConnected: Bool = false
     private var currentUser: String?
 
     nonisolated private let webSocketClient: any WebSocketClient
@@ -59,6 +64,7 @@ final class DefaultChatService: ChatService {
         try await webSocketClient.connect(to: BlabChatEndpoint.webSocket.url)
 
         logger.debug("← WS connected")
+        isConnected = true
         startListening()
         let auth = OutgoingAuth(token: token)
         let json = try encoder.encode(auth)
@@ -68,6 +74,16 @@ final class DefaultChatService: ChatService {
         logger.debug("→ WS send: \(jsonString)")
         try await webSocketClient.send(.text(jsonString))
         startPinging()
+    }
+
+    func refresh(
+        token: String
+    ) async throws {
+        let auth = OutgoingAuth(token: token)
+        let json = try encoder.encode(auth)
+        guard let jsonString = String(data: json, encoding: .utf8) else { return }
+        logger.debug("→ WS send (refresh): \(jsonString)")
+        try await webSocketClient.send(.text(jsonString))
     }
 
     func send(
@@ -99,6 +115,7 @@ final class DefaultChatService: ChatService {
         pingTask?.cancel()
         pingTask = nil
         await webSocketClient.disconnect()
+        isConnected = false
         messages = []
         friends = []
         currentUser = nil
@@ -183,7 +200,10 @@ final class DefaultChatService: ChatService {
     }
 
     private func markDisconnected() {
+        isConnected = false
         listeningTask = nil
+        pingTask?.cancel()
+        pingTask = nil
     }
 }
 

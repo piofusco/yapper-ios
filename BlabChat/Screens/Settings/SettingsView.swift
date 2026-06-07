@@ -9,17 +9,51 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(DefaultAuthService.self) private var authService
+    @Environment(DefaultChatService.self) private var chatService
 
     var body: some View {
-        List {
-            Button(role: .destructive) {
-                authService.logout()
-            } label: {
-                Text("Log Out")
+        Group {
+            if !chatService.isConnected {
+                ContentUnavailableView {
+                    Label("Uh Oh", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text("Something went wrong. Please try again.")
+                } actions: {
+                    Button {
+                        guard let token = authService.token else { return }
+                        Task { try? await chatService.connect(token: token) }
+                    } label: {
+                        Text("Reconnect")
+                            .font(.system(size: 17, weight: .semibold))
+                            .padding(16)
+                            .foregroundStyle(.white)
+                            .background(AppColor.orange.color)
+                            .clipShape(.capsule)
+                            .contentShape(.capsule)
+                    }
+                }
+            } else {
+                Form {
+                    Button(role: .destructive) {
+                        authService.logout()
+                    } label: {
+                        Text("Log Out")
+                    }
+                }
             }
         }
-        .navigationTitle("Settings")
+
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                HStack {
+                    Text("Settings")
+                    Circle()
+                        .fill(chatService.isConnected ? Color.green : Color.red)
+                        .frame(width: 10, height: 10)
+                }
+            }
+        }
     }
 }
 
@@ -28,4 +62,5 @@ struct SettingsView: View {
         SettingsView()
     }
     .environment(DefaultAuthService())
+    .environment(DefaultChatService())
 }
