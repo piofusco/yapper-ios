@@ -13,13 +13,13 @@ enum YapperEndpoint {
 
     var url: URL {
         var components = URLComponents()
-        components.host = "network.devan.chat"
+        components.host = "chat.devan.network"
         switch self {
         case .login:
             components.scheme = "https"
             components.path = "/login"
         case .webSocket:
-            components.scheme = "ws"
+            components.scheme = "wss"
             components.port = 8222
             components.path = "/ws"
         }

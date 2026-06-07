@@ -26,8 +26,8 @@ final class DefaultHTTPClient: HTTPClient {
     private let decoder: ScaffoldJSONDecoder
 
     init(
-        urlSession: ScaffoldURLSession,
-        decoder: ScaffoldJSONDecoder
+        urlSession: ScaffoldURLSession = URLSession.shared,
+        decoder: ScaffoldJSONDecoder = JSONDecoder()
     ) {
         self.urlSession = urlSession
         self.decoder = decoder
